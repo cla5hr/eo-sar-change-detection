@@ -1,34 +1,45 @@
-# EO-SAR Change Detection using Deep Learning
+# EO-SAR Change Detection using Dual-Encoder Feature Fusion
 
-This project focuses on binary change detection using co-registered EO and SAR satellite image pairs.
-
-## Features
-- Dual encoder EO-SAR fusion network
-- U-Net style decoder
-- Binary change segmentation
-- Threshold optimization
-- Visualization generation
-- EO-SAR modality fusion
+A deep learning based EO-SAR change detection pipeline for binary segmentation of disaster-induced changes in satellite imagery. The project uses a dual-encoder fusion architecture with separate EO and SAR feature extraction, followed by feature-level fusion and U-Net decoding.
 
 ---
 
-## Folder Structure
+## Features
+
+- Dual-encoder EO-SAR fusion architecture
+- EfficientNet-B2 encoders
+- U-Net decoder with SCSE attention
+- Focal + Tversky hybrid loss
+- Threshold sweep evaluation
+- Visualization generation
+- Black-corner noise handling
+- EO-SAR modality-specific preprocessing
+
+---
+
+## Repository Structure
 
 ```text
-data/
-├── train/
-├── val/
-└── test/
+.
+├── checkpoints/
+├── data/
+├── visualizations/
+├── config.yaml
+├── dataset.py
+├── eval.py
+├── losses.py
+├── model.py
+├── optuna_search.py
+├── train.py
+├── utils.py
+└── README.md
 ```
-
-Dataset should contain:
-- pre-event EO images
-- post-event SAR images
-- masks
 
 ---
 
 ## Installation
+
+Create environment and install dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -36,33 +47,90 @@ pip install -r requirements.txt
 
 ---
 
+## Dataset
+
+The original dataset is not included in this repository due to size and usage restrictions.
+
+Place the dataset inside:
+
+```text
+data/
+```
+
+Expected structure:
+
+```text
+data/
+├── train/
+│   ├── pre/
+│   ├── post/
+│   └── masks/
+├── val/
+│   ├── pre/
+│   ├── post/
+│   └── masks/
+└── test/
+    ├── pre/
+    ├── post/
+    └── masks/
+```
+
+Where:
+- `pre/` → EO RGB images
+- `post/` → SAR grayscale images
+- `masks/` → binary segmentation masks
+
+Image filenames must match across all folders.
+
+---
+
 ## Training
+
+Run training using:
 
 ```bash
 python train.py
+```
+
+Training configuration can be modified inside:
+
+```text
+config.yaml
 ```
 
 ---
 
 ## Evaluation
 
+Run evaluation using:
+
 ```bash
-python eval.py --weights ./checkpoints/best_model.pth
+python eval.py
 ```
+
+The evaluation script performs:
+- threshold sweep
+- metric computation
+- confusion matrix generation
+- visualization saving
 
 ---
 
 ## Model Weights
 
-Model weights are available here:
+Pretrained model weights:
 
 https://huggingface.co/cla5hr/eo-sar-change-detection/resolve/main/best_model.pth
 
+Place downloaded weights inside:
+
+```text
+checkpoints/
+```
+
 ---
 
-## Results
-
-Final Test Metrics:
+## Final Test Performance
 
 | Metric | Value |
 |---|---|
@@ -71,10 +139,28 @@ Final Test Metrics:
 | Precision | 0.0437 |
 | Recall | 0.2271 |
 
+Threshold used during evaluation:
+
+```text
+0.003
+```
+
 ---
 
-## Notes
+## Key Observations
 
-- Dataset is not included due to size restrictions.
-- Black image boundary regions were handled using noise injection preprocessing.
-- EO and SAR modalities use separate normalization strategies.
+- The dataset is severely imbalanced (~1.57% positive pixels).
+- EO and SAR modalities require separate preprocessing strategies.
+- Transformer-based SegFormer experiments collapsed on this dataset.
+- Dual-encoder fusion significantly improved validation performance compared to early fusion.
+- Black satellite reprojection corners produced strong false positives during early experiments and were handled using low-amplitude noise injection.
+
+---
+
+## Hardware
+
+- GPU: NVIDIA RTX 4050 Laptop GPU (6GB VRAM)
+- RAM: 16GB
+- Training resolution: 384×384
+- Batch size: 4
+
