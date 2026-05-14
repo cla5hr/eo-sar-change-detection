@@ -1,0 +1,24 @@
+data:
+  root_dir: "C:/Sashank/AIML/GalaxEye/data"
+  image_size: 384
+
+model:
+  encoder_name: "efficientnet-b2"
+  pretrained: true
+
+training:
+  epochs: 40
+  batch_size: 4
+  num_workers: 0
+  learning_rate: 0.0001
+  weight_decay: 0.0008
+  focal_weight: 0.4
+  tversky_weight: 0.6
+  seed: 42
+
+checkpoint:
+  save_dir: "./checkpoints"
+  save_best: true
+
+evaluation:
+  threshold: 0.2
