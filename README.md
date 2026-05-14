@@ -17,6 +17,30 @@ A deep learning based EO-SAR change detection pipeline for binary segmentation o
 
 ---
 
+## Architecture
+
+<p align="center">
+  <img src="visualizations/architecture.png" width="700">
+</p>
+
+The model uses separate EfficientNet-B2 encoders for EO and SAR modalities. Feature maps from both branches are fused using absolute feature difference and convolutional fusion before decoding through a U-Net style decoder with SCSE attention.
+
+---
+
+## Sample Prediction
+
+<p align="center">
+  <img src="visualizations/prediction_example.png" width="1000">
+</p>
+
+Example visualization showing:
+- EO pre-event image
+- SAR post-event image
+- Ground truth mask
+- Predicted change mask
+
+---
+
 ## Repository Structure
 
 ```text
@@ -32,6 +56,7 @@ A deep learning based EO-SAR change detection pipeline for binary segmentation o
 ├── optuna_search.py
 ├── train.py
 ├── utils.py
+├── requirements.txt
 └── README.md
 ```
 
@@ -164,3 +189,11 @@ Threshold used during evaluation:
 - Training resolution: 384×384
 - Batch size: 4
 
+---
+
+## Author
+
+Sashank Talluri
+
+GitHub:
+https://github.com/cla5hr
