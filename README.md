@@ -20,7 +20,7 @@ A deep learning based EO-SAR change detection pipeline for binary segmentation o
 ## Architecture
 
 <p align="center">
-  <img src="visualizations/architecture.jpg" width="700">
+  <img src="visualizations/architecture.jpg" width="500">
 </p>
 
 The model uses separate EfficientNet-B2 encoders for EO and SAR modalities. Feature maps from both branches are fused using absolute feature difference and convolutional fusion before decoding through a U-Net style decoder with SCSE attention.
